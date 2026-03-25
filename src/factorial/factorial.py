@@ -20,7 +20,8 @@ def factorial(num):
             num -= 1
         return fact 
 
-if len(sys.argv) == 0:
+# Se verifica que se haya informado un número como argumento al programa
+if len(sys.argv) < 2:
    print("Debe informar un número!")
    sys.exit()
 
