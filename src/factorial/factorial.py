@@ -25,13 +25,21 @@ if len(sys.argv) < 2:
    print("Debe informar un número!")
    sys.exit()
 
-# Se separa el argumento usando el guion '-'
-rango = sys.argv[1].split("-")
+rango = sys.argv[1]
 
-desde = int(rango[0])
-hasta = int(rango[1])
-
-# Se recorre el rango desde el valor de "desde" hasta el valor de "hasta" y se imprime el factorial de cada número en ese rango
+# Caso "-hasta"
+if rango.startswith("-"):
+    hasta = int(rango[1:])
+    desde = 1
+# Caso "desde-"
+elif rango.endswith("-"):
+    desde = int(rango[:-1])
+    hasta = 60
+# Caso normal "desde-hasta"
+else:
+    partes = rango.split("-")
+    desde = int(partes[0])
+    hasta = int(partes[1])
+# Recorrer e imprimir factoriales
 for num in range(desde, hasta + 1):
-    print("Factorial ",num,"! es ", factorial(num)) 
-
+    print("Factorial", num, "! es", factorial(num))
