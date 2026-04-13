@@ -17,7 +17,6 @@ Características:
 import sys
 import math
 
-
 # -------------------------------------------------
 # Excepción personalizada para errores RPN
 # -------------------------------------------------
@@ -25,12 +24,12 @@ class RPNError(Exception):
     """Error específico del evaluador RPN"""
     pass
 
-
 # -------------------------------------------------
 # Determina si un token es numérico
 # Soporta enteros y floats
 # -------------------------------------------------
 def is_number(token):
+    """Determina si el token puede ser convertido a número"""
     try:
         float(token)
         return True
@@ -43,6 +42,7 @@ def is_number(token):
 # en la pila antes de operar
 # -------------------------------------------------
 def require(stack, n):
+    """Verifica que la pila tenga al menos n elementos."""
     if len(stack) < n:
         raise RPNError("Pila insuficiente para operar")
 
@@ -52,6 +52,7 @@ def require(stack, n):
 # Usado por operaciones binarias
 # -------------------------------------------------
 def pop2(stack):
+    """Extrae dos operandos desde la pila para operaciones binarias."""
     require(stack, 2)
 
     b = stack.pop()
@@ -65,7 +66,7 @@ def pop2(stack):
 # Recibe lista de tokens
 # -------------------------------------------------
 def evaluate(tokens):
-
+    """Evalúa una expresión RPN dada como lista de tokens."""
     # Pila principal
     stack = []
 
@@ -286,6 +287,7 @@ def evaluate(tokens):
 # Permite ejecutar desde consola
 # -------------------------------------------------
 def main():
+    """Punto de entrada para ejecución desde consola."""
 
     try:
 
@@ -314,9 +316,8 @@ def main():
         print("Error:", e)
 
     # Captura errores inesperados
-    except Exception:
-        print("Error inesperado")
-
+    except Exception as e:
+        print("Error inesperado:", e)
 
 # -------------------------------------------------
 # Punto de entrada del programa
