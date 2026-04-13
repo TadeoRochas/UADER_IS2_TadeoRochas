@@ -17,12 +17,15 @@ Características:
 import sys
 import math
 
+
 # -------------------------------------------------
 # Excepción personalizada para errores RPN
 # -------------------------------------------------
 class RPNError(Exception):
     """Error específico del evaluador RPN"""
+
     pass
+
 
 # -------------------------------------------------
 # Determina si un token es numérico
@@ -76,8 +79,8 @@ def evaluate(tokens):
     # Constantes matemáticas
     constants = {
         "p": math.pi,  # pi
-        "e": math.e,   # e
-        "j": (1 + math.sqrt(5)) / 2  # phi
+        "e": math.e,  # e
+        "j": (1 + math.sqrt(5)) / 2,  # phi
     }
 
     # Recorre cada token de la expresión
@@ -155,11 +158,19 @@ def evaluate(tokens):
         # Funciones matemáticas unarias
         # ---------------------------------
         if token in {
-            "sqrt", "log", "ln",
-            "ex", "10x", "1/x",
-            "sin", "cos", "tg",
-            "asin", "acos", "atg",
-            "CHS"
+            "sqrt",
+            "log",
+            "ln",
+            "ex",
+            "10x",
+            "1/x",
+            "sin",
+            "cos",
+            "tg",
+            "asin",
+            "acos",
+            "atg",
+            "CHS",
         }:
 
             require(stack, 1)
@@ -184,10 +195,10 @@ def evaluate(tokens):
 
             # 10^x
             elif token == "10x":
-                stack.append(10 ** x)
+                stack.append(10**x)
 
             # Inverso multiplicativo
-            elif token == "1/x":
+            elif token == "1 / x":
 
                 if x == 0:
                     raise RPNError("División por cero")
@@ -227,7 +238,7 @@ def evaluate(tokens):
 
             a, b = pop2(stack)
 
-            stack.append(a ** b)
+            stack.append(a**b)
 
             continue
 
@@ -275,10 +286,7 @@ def evaluate(tokens):
     # Debe quedar exactamente 1 valor
     # ---------------------------------
     if len(stack) != 1:
-        raise RPNError(
-            "La pila no terminó con un solo valor"
-        )
-
+        raise RPNError("La pila no terminó con un solo valor")
     return stack[0]
 
 
@@ -318,6 +326,7 @@ def main():
     # Captura errores inesperados
     except Exception as e:
         print("Error inesperado:", e)
+
 
 # -------------------------------------------------
 # Punto de entrada del programa
