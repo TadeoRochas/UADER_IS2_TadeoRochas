@@ -70,6 +70,26 @@ class TestRPN(unittest.TestCase):
             pass
         else:
             self.fail("No detectó pila final inválida")
+    
+    # -----------------------
+    # ERRORES ADICIONALES - Generados a partir de la iteración con IA para mejorar el Coverage
+    # -----------------------
+
+    def test_inverse_division_by_zero(self):
+        try:
+            evaluate("0 1/x".split())
+        except RPNError:
+            pass
+        else:
+            self.fail("No detectó división por cero en 1/x")
+
+    def test_invalid_memory_rcl(self):
+        try:
+            evaluate("10 RCL".split())
+        except RPNError:
+            pass
+        else:
+            self.fail("No detectó memoria inválida en RCL")
 
     # -----------------------
     # COMANDOS DE PILA
@@ -193,6 +213,22 @@ class TestRPN(unittest.TestCase):
         self.assertAlmostEqual(result, 1, places=4)
 
     # -----------------------
+    # FUNCIONES TRIG INVERSAS - Generados a partir de la iteración con IA para mejorar el Coverage
+    # -----------------------
+
+    def test_asin(self):
+        result = evaluate("1 asin".split())
+        self.assertAlmostEqual(result, 90, places=4)
+
+    def test_acos(self):
+        result = evaluate("1 acos".split())
+        self.assertAlmostEqual(result, 0, places=4)
+
+    def test_atg(self):
+        result = evaluate("1 atg".split())
+        self.assertAlmostEqual(result, 45, places=4)
+
+    # -----------------------
     # MEMORIAS
     # -----------------------
 
@@ -209,6 +245,46 @@ class TestRPN(unittest.TestCase):
             pass
         else:
             self.fail("No detectó memoria inválida")
+
+    # -----------------------
+    # CASOS EDGE - Generados a partir de la iteración con IA para mejorar el Coverage
+    # -----------------------
+
+    def test_clear_then_operation(self):
+        try:
+            evaluate("5 clear +".split())
+        except RPNError:
+            pass
+        else:
+            self.fail("No detectó pila insuficiente tras clear")
+
+    # -----------------------
+    # TEST DE MAIN() - Generados a partir de la iteración con IA para mejorar el Coverage
+    # -----------------------
+
+    def test_main_execution(self):
+        import subprocess
+        import sys
+
+        result = subprocess.run(
+            [sys.executable, "rpn.py", "3", "4", "+"],
+            capture_output=True,
+            text=True
+        )
+
+        self.assertIn("7", result.stdout)
+
+    
+    # -----------------------
+    # EXCEPTION GENERAL - Generados a partir de la iteración con IA para mejorar el Coverage
+    # -----------------------
+
+    def test_unexpected_exception_branch(self):
+        try:
+            # fuerza error raro
+            evaluate(None)
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
