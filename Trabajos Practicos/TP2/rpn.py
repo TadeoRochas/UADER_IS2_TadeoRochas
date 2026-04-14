@@ -17,6 +17,8 @@ Características:
 import sys
 import math
 
+from matplotlib.pylab import stack
+
 
 # -------------------------------------------------
 # Excepción personalizada para errores RPN
@@ -63,6 +65,11 @@ def pop2(stack):
 
     return a, b
 
+def potencia(stack):
+    """Aplica operación potencia yx."""
+    a, b = pop2(stack)
+    stack.append(a**b)
+
 
 # -------------------------------------------------
 # Función principal de evaluación RPN
@@ -74,7 +81,8 @@ def evaluate(tokens):
     stack = []
 
     # Memorias 00–09
-    mem = [0.0] * 10
+    MEMORY_SIZE = 10
+    mem = [0.0] * MEMORY_SIZE
 
     # Constantes matemáticas
     constants = {
@@ -178,15 +186,21 @@ def evaluate(tokens):
             x = stack.pop()
 
             # Raíz cuadrada
-            if token == "sqrt":
+            if x < 0:
+                raise RPNError("No se puede calcular raíz cuadrada de número negativo")
+            elif token == "sqrt":
                 stack.append(math.sqrt(x))
 
             # Logaritmo base 10
             elif token == "log":
+                if x <= 0:
+                    raise RPNError("Logaritmo indefinido")
                 stack.append(math.log10(x))
 
             # Logaritmo natural
             elif token == "ln":
+                if x <= 0:
+                    raise RPNError("Logaritmo indefinido")
                 stack.append(math.log(x))
 
             # e^x
@@ -198,12 +212,14 @@ def evaluate(tokens):
                 stack.append(10**x)
 
             # Inverso multiplicativo
-            elif token == "1 / x":
+            elif token == "1/x":
 
                 if x == 0:
                     raise RPNError("División por cero")
 
                 stack.append(1 / x)
+
+                continue
 
             # Trigonométricas (grados → radianes)
             elif token == "sin":
@@ -234,12 +250,9 @@ def evaluate(tokens):
         # ---------------------------------
         # Potencia yx
         # ---------------------------------
+
         if token == "yx":
-
-            a, b = pop2(stack)
-
-            stack.append(a**b)
-
+            potencia(stack)
             continue
 
         # ---------------------------------
@@ -251,7 +264,14 @@ def evaluate(tokens):
 
             require(stack, 2)
 
-            idx = int(stack.pop())
+            idx = stack.pop()
+
+            # Verifica que el índice sea entero
+            if not idx.is_integer():
+                raise RPNError("Índice de memoria debe ser entero")
+
+            idx = int(idx)
+
             val = stack.pop()
 
             # Validación índice memoria
@@ -279,7 +299,9 @@ def evaluate(tokens):
         # ---------------------------------
         # Si no coincide con nada → error
         # ---------------------------------
-        raise RPNError(f"Token inválido: {token}")
+        raise RPNError(
+            f"Token inválido encontrado: '{token}'"
+        )
 
     # ---------------------------------
     # Validación final:

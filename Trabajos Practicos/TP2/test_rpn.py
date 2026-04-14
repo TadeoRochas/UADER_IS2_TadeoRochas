@@ -156,11 +156,30 @@ class TestRPN(unittest.TestCase):
             3
         )
 
-    def test_log(self):
-        self.assertEqual(
-            evaluate("100 log".split()),
-            2
-        )
+    def test_log_zero_error(self):
+        try:
+            evaluate("0 log".split())
+        except RPNError:
+            pass
+        else:
+            self.fail("No detectó logaritmo inválido")
+
+    def test_log_negative_error(self):
+        try:
+            evaluate("-5 log".split())
+        except RPNError:
+            pass
+        else:
+            self.fail("No detectó log negativo")
+
+
+    def test_ln_zero_error(self):
+        try:
+            evaluate("0 ln".split())
+        except RPNError:
+            pass
+        else:
+            self.fail("No detectó ln inválido")
 
     def test_ln(self):
         result = evaluate("2.718281828 ln".split())
